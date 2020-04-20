@@ -49,3 +49,8 @@ metaOutput!.metadataObjectTypes = [AVMetadataObject.ObjectType.qr, AVMetadataObj
 // LINE 2
 if ((found.type == AVMetadataObject.ObjectType.qr || found.type == AVMetadataObject.ObjectType.ean13 || found.type == AVMetadataObject.ObjectType.code128 || found.type == AVMetadataObject.ObjectType.code39) && found.stringValue != nil) { //ADDED BY SONIC
 ```
+
+## Copyright
+Original source code (QRScanner.java, QRScanner.swift) copyright by bitpay:
+
+https://github.com/bitpay/cordova-plugin-qrscanner/
