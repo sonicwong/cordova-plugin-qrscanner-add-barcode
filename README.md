@@ -8,7 +8,7 @@ Add QR Scanner to support EAN-13, CODE-128, CODE-39.
 
 
 ## How To Use
-1) Place all files user "hooks/qrscanner_mod/".
+1) Place all files user "hooks/qrscanner_add_barcode/".
 
 2) Add below in "config.xml":
 ```xml
