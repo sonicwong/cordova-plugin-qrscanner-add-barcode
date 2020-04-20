@@ -6,6 +6,8 @@ URL: https://github.com/bitpay/cordova-plugin-qrscanner/issues/132
 ## Function
 Add QR Scanner to support EAN-13, CODE-128, CODE-39.
 
+Tested with: cordova-android: 8.1.0, cordova-ios: 5.1.1
+
 
 ## How To Use
 1) Place all files user "hooks/qrscanner_add_barcode/".
