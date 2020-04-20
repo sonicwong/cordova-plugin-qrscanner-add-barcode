@@ -10,7 +10,7 @@ Tested with: cordova-android: 8.1.0, cordova-ios: 5.1.1
 
 
 ## How To Use
-1) Place all files user "hooks/qrscanner_add_barcode/".
+1) Place all files under "hooks/qrscanner_add_barcode/".
 
 2) Add below in "config.xml":
 ```xml
