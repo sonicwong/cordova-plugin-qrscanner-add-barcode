@@ -1,30 +1,25 @@
 #!/usr/bin/env node
-
 var fs = require('fs');
 var path = require('path');
-
-var filestocopy = [{
-  "hooks/qrscanner_mod/QRScanner.swift":
-  "platforms/ios/{YOUR_APP_NAME}/Plugins/cordova-plugin-qrscanner/QRScanner.swift"
-}];
+var xml2js = require('xml2js');
+var parser = new xml2js.Parser();
 
 module.exports = function(context) {
-
-    // no need to configure below
-    var rootdir = context.opts.projectRoot;
-
-    filestocopy.forEach(function(obj) {
-        Object.keys(obj).forEach(function(key) {
-            var val = obj[key];
-            var srcfile = path.join(rootdir, key);
-            var destfile = path.join(rootdir, val);
-            console.log("copying "+srcfile+" to "+destfile);
-            var destdir = path.dirname(destfile);
-            if (fs.existsSync(srcfile) && fs.existsSync(destdir)) {
-                fs.createReadStream(srcfile).pipe(
-                    fs.createWriteStream(destfile));
-            }
+    fs.readFile(path.join(context.opts.projectRoot, 'config.xml'), function(err, xmlString) {
+        parser.parseString(xmlString, function (err, xmlObj) {
+            var filesToOverWrite = [{
+                srcFile: path.join(__dirname, 'QRScanner.swift'),
+                destFile: path.join(context.opts.projectRoot, 'platforms/ios/' + xmlObj.widget.name + '/Plugins/cordova-plugin-qrscanner/QRScanner.swift')
+            }];
+            console.log('*** cordova-plugin-qrscanner-add-barcode MOD (iOS) ***');
+            filesToOverWrite.forEach(function(file) {
+                console.log('Overwriting [' + file.destFile + '] ...');
+                if (fs.existsSync(file.srcFile) && fs.existsSync(path.dirname(file.destFile))) {
+                    fs.createReadStream(file.srcFile).pipe(
+                        fs.createWriteStream(file.destFile)
+                    );
+                }
+            });
         });
     });
-
 };

@@ -22,8 +22,6 @@ Tested with: cordova-android: 8.1.0, cordova-ios: 5.1.1
 <preference name="UseSwiftLanguageVersion" value="5" ></preference>
 ```
 
-3) Remember to change [APP NAME] path in "hooks/qrscanner_mod/301_ios.js".
-
 
 ## Change in Android
 PATH: ⁨app/⁨src/⁨main/⁨java/⁨com/⁨bitpay/⁨cordova/⁨qrscanner⁩/QRScanner.java
