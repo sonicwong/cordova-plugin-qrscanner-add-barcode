@@ -26,7 +26,7 @@ Tested with: cordova-android: 8.1.0, cordova-ios: 5.1.1
 ## Change in Android
 PATH: ⁨app/⁨src/⁨main/⁨java/⁨com/⁨bitpay/⁨cordova/⁨qrscanner⁩/QRScanner.java
 
-Avaiable Code Format: https://zxing.github.io/zxing/apidocs/com/google/zxing/BarcodeFormat.html
+Available Code Format: https://zxing.github.io/zxing/apidocs/com/google/zxing/BarcodeFormat.html
 ```
 // LINE1
 formatList.add(BarcodeFormat.EAN_13);
@@ -37,7 +37,7 @@ formatList.add(BarcodeFormat.CODE_39);
 ## Change in iOS
 PATH: [APP_NAME]/⁨Plugins/⁨cordova-plugin-qrscanner/QRScanner.swift
 
-Avaiable Code Format: https://developer.apple.com/documentation/avfoundation/avmetadataobject/objecttype
+Available Code Format: https://developer.apple.com/documentation/avfoundation/avmetadataobject/objecttype
 
 ```
 // LINE 1
