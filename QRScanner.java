@@ -330,7 +330,10 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                 this.cordova.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((ViewGroup) mBarcodeView.getParent()).removeView(mBarcodeView);
+                        ViewGroup parent = ((ViewGroup) mBarcodeView.getParent());
+                        if (parent != null) {
+                            parent.removeView(mBarcodeView);
+                        }
                         cameraPreviewing = false;
                     }
                 });
@@ -552,7 +555,10 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                 this.cordova.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((ViewGroup) mBarcodeView.getParent()).removeView(mBarcodeView);
+                        ViewGroup parent = ((ViewGroup) mBarcodeView.getParent());
+                        if (parent != null) {
+                            parent.removeView(mBarcodeView);
+                        }
                         cameraPreviewing = false;
                     }
                 });
@@ -781,7 +787,10 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
             this.cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ((ViewGroup) mBarcodeView.getParent()).removeView(mBarcodeView);
+                    ViewGroup parent = ((ViewGroup) mBarcodeView.getParent());
+                    if (parent != null) {
+                        parent.removeView(mBarcodeView);
+                    }
                     cameraPreviewing = false;
                 }
             });
