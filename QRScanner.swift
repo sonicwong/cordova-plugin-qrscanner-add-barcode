@@ -98,24 +98,14 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
 
     // utility method
     @objc func backgroundThread(delay: Double = 0.0, background: (() -> Void)? = nil, completion: (() -> Void)? = nil) {
-        if #available(iOS 8.0, *) {
-            DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
-                if (background != nil) {
-                    background!()
-                }
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay * Double(NSEC_PER_SEC)) {
-                    if(completion != nil){
-                        completion!()
-                    }
-                }
-            }
-        } else {
-            // Fallback for iOS < 8.0
-            if(background != nil){
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
+            if (background != nil) {
                 background!()
             }
-            if(completion != nil){
-                completion!()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay * Double(NSEC_PER_SEC)) {
+                if(completion != nil){
+                    completion!()
+                }
             }
         }
     }
@@ -133,15 +123,8 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
             if (captureSession?.isRunning != true){
                 cameraView.backgroundColor = UIColor.clear
                 self.webView!.superview!.insertSubview(cameraView, belowSubview: self.webView!)
-                let availableVideoDevices =  AVCaptureDevice.devices(for: AVMediaType.video)
-                for device in availableVideoDevices {
-                    if device.position == AVCaptureDevice.Position.back {
-                        backCamera = device
-                    }
-                    else if device.position == AVCaptureDevice.Position.front {
-                        frontCamera = device
-                    }
-                }
+                backCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
                 // older iPods have no back camera
                 if(backCamera == nil){
                     currentCamera = 1
@@ -153,8 +136,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
                 metaOutput = AVCaptureMetadataOutput()
                 captureSession!.addOutput(metaOutput!)
                 metaOutput!.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-                //metaOutput!.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
-                metaOutput!.metadataObjectTypes = [AVMetadataObject.ObjectType.qr, AVMetadataObject.ObjectType.ean13, AVMetadataObject.ObjectType.code128, AVMetadataObject.ObjectType.code39] //ADDED BY SONIC
+                metaOutput!.metadataObjectTypes = [AVMetadataObject.ObjectType.qr, AVMetadataObject.ObjectType.ean13, AVMetadataObject.ObjectType.code128, AVMetadataObject.ObjectType.code39]
                 captureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
                 cameraView.addPreviewLayer(captureVideoPreviewLayer)
                 captureSession!.startRunning()
@@ -239,8 +221,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
             return
         }
         let found = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
-        //if found.type == AVMetadataObject.ObjectType.qr && found.stringValue != nil {
-        if ((found.type == AVMetadataObject.ObjectType.qr || found.type == AVMetadataObject.ObjectType.ean13 || found.type == AVMetadataObject.ObjectType.code128 || found.type == AVMetadataObject.ObjectType.code39) && found.stringValue != nil) { //ADDED BY SONIC
+        if ((found.type == AVMetadataObject.ObjectType.qr || found.type == AVMetadataObject.ObjectType.ean13 || found.type == AVMetadataObject.ObjectType.code128 || found.type == AVMetadataObject.ObjectType.code39) && found.stringValue != nil) {
             scanning = false
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: found.stringValue)
             commandDelegate!.send(pluginResult, callbackId: nextScanningCommand?.callbackId!)
@@ -440,7 +421,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
         }
 
         var canEnableLight = false
-        if(backCamera?.hasTorch == true && backCamera?.isTorchAvailable == true && backCamera?.isTorchModeSupported(AVCaptureDevice.TorchMode.on) == true){
+        if(currentCamera == 0 && backCamera?.hasTorch == true && backCamera?.isTorchAvailable == true && backCamera?.isTorchModeSupported(AVCaptureDevice.TorchMode.on) == true){
             canEnableLight = true
         }
 
@@ -469,8 +450,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     @objc func openSettings(_ command: CDVInvokedUrlCommand) {
-        if #available(iOS 10.0, *) {
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
         if UIApplication.shared.canOpenURL(settingsUrl) {
@@ -479,15 +459,6 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
             })
         } else {
             self.sendErrorCode(command: command, error: QRScannerError.open_settings_unavailable)
-            }
-        } else {
-            // pre iOS 10.0
-            if #available(iOS 8.0, *) {
-                UIApplication.shared.openURL(NSURL(string: UIApplication.openSettingsURLString)! as URL)
-                self.getStatus(command)
-            } else {
-                self.sendErrorCode(command: command, error: QRScannerError.open_settings_unavailable)
-            }
         }
     }
 }
